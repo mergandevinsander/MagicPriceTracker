@@ -1,0 +1,111 @@
+<!doctype html>
+<!--
+ This page is shown when the extension button is clicked, because the
+ "browser_action" field in manifest.json contains the "default_popup" key with
+ value "popup.html".
+ -->
+<html ng-app="mtgSaleExtension">
+  <head>
+    <meta charset="utf-8">
+    <title>Mtgsale buy list</title>
+
+    <!--
+      - JavaScript and HTML must be in separate files: see our Content Security
+      - Policy documentation[1] for details and explanation.
+      -
+      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
+     -->
+    <link href="bootstrap.min.css" rel="stylesheet">
+    <script src="angular.js"></script>
+    <script src="ui-bootstrap.js"></script>
+    <script src="optionsController.js"></script>
+  </head>
+  <body>
+    <style>
+      .price {    
+        color: white;
+        font: bold 24px Helvetica, Sans-Serif; 
+        position: absolute;
+        left: 5px;
+        bottom: 5px;
+        background: rgba(0, 0, 0, 0.7);
+        opacity: 0.7;
+        padding: 10px;
+      }
+      .card { 
+        float: left;
+        position: relative; 
+         /*height: 430px;*/
+      }
+      .card .name {
+        position: absolute;
+        opacity: 0;
+        left: 5px;
+        top: 5px;
+
+      }
+      body { padding-top: 70px; }
+    </style>
+    <br />
+    <script type="text/ng-template" id="myTooltipTemplate.html">
+      <div ng-repeat="h in card.priceHistory">{{h.price}} {{h.date | date}}</div>
+    </script>
+    </script>
+    <div class="col-md-12" ng-controller="optionsController" ng-cloack>
+      <nav class="navbar navbar-default navbar-fixed-top">
+        <div style="margin-top: 9px;">
+          <form class="form-inline">
+            <div class="form-group">
+              <label for="set">Set</label>
+              <select id="set" ng-options="item as item.title for item in sets" ng-model="filterModel.set" class="form-control">
+              </select>
+              <button ng-click="filterModel.set = undefined" class="btn btn-default">clear</button>
+            </div>
+            <div class="form-group">
+              <label for="price">Price</label>
+              <input type="number" class="form-control" id="price" min="0" step="0.01" placeholder="0" ng-model="filterModel.price">
+            </div>
+            <div class="form-group">
+              <label for="rarity">Rarity</label>
+              <div class="btn-group">
+                <label class="btn btn-default" ng-class="{ 'btn-primary': filterModel.c }" ng-model="filterModel.c" uib-btn-checkbox>Common</label>
+                <label class="btn btn-default" ng-class="{ 'btn-success': filterModel.u }"  ng-model="filterModel.u" uib-btn-checkbox>Uncommon</label>
+                <label class="btn btn-default" ng-class="{ 'btn-warning': filterModel.r }"  ng-model="filterModel.r" uib-btn-checkbox>Rare</label>
+                <label class="btn btn-default" ng-class="{ 'btn-danger': filterModel.m }"  ng-model="filterModel.m" uib-btn-checkbox>Mythic</label>
+                <label class="btn btn-default" ng-class="{ 'btn-danger': filterModel.s }"  ng-model="filterModel.s" uib-btn-checkbox>Special</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="width">image width</label>
+              <input type="number" class="form-control" id="width" min="50" step="10" placeholder="50" ng-model="filterModel.width">
+            </div>
+            <div class="form-group">
+                <label class="btn btn-default" ng-class="{ 'btn-info': filterModel.z }"  ng-model="filterModel.z" uib-btn-checkbox>was zero</label>
+            </div>
+            <div class="form-group pull-right"><a href="http://mtgsale.ru/home/buylist#" target="_blank">update prices</a></div>
+          </form>
+        </div>
+      </nav>
+      <div class="row">
+        <div ng-repeat="card in sets | filter:setFilter(filterModel) | selectmany:'cards' | filter:cardFilter(filterModel) | page:pages.currentPage:pages.itemsPerPage" class="card" >
+
+              <img ng-src="http://mtgsale.ru/cardImage/{{card.setId}}/ENG/{{card.id}}.jpg" class="img-thumbnail" style="width:{{filterModel.width}}px">
+              <span class="price" style="font-size:{{filterModel.width/4}}px"  uib-tooltip-template="'myTooltipTemplate.html'" tooltip-placement="bottom">{{ card.price }} ₽</span>
+              <span class="name">{{card.title}}</span>
+        </div>
+
+      </div>
+        <div uib-pagination direction-links="false"
+                    
+                    style="display: block"
+                    ng-show="(sets | filter:setFilter(filterModel) | selectmany:'c' | filter:cardFilter(filterModel)).length > pages.itemsPerPage"
+                    total-items="(sets | filter:setFilter(filterModel) | selectmany:'c' | filter:cardFilter(filterModel)).length"
+                    ng-model="pages.currentPage"
+                    num-pages="smallnumPages"
+                    items-per-page="pages.itemsPerPage">
+
+        </div uib-pagination>
+    </div>
+  </body>
+</html>
+
