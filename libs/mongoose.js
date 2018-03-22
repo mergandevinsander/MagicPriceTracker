@@ -2,7 +2,14 @@ var mongoose    = require('mongoose');
 var log         = require('./log')(module);
 var config      = require('./config');
 
-mongoose.connect(config.get('mongoose:uri'));
+var dbName = 'sampledb';
+
+mongodb_connection_string = 'mongodb://127.0.0.1:27017/' + dbName;
+if(process.env.OPENSHIFT_MONGODB_DB_URL){
+  mongodb_connection_string = process.env.OPENSHIFT_MONGODB_DB_URL + dbName;
+}
+
+mongoose.connect(mongodb_connection_string);
 
 var db = mongoose.connection;
 

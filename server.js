@@ -1,9 +1,10 @@
-// берём Express
 var express = require('express');
-var path  = require('path'); // модуль для парсинга пути
-var log             = require('./libs/log')(module);
+var path  = require('path');
 var log             = require('./libs/log')(module);
 var CardSetModel    = require('./libs/mongoose').CardSetModel;
+
+var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080
+var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
 
 var app = express();
 
@@ -11,14 +12,13 @@ var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var serveStatic = require('serve-static');
 var config          = require('./libs/config');
-// создаём Express-приложение
 
 app.use(bodyParser.urlencoded({ limit: '5000mb', extended: false,
     parameterLimit: 100000000 }));
 app.use(bodyParser.json({limit: '5000mb'}));
 app.use(methodOverride('X-HTTP-Method-Override'));
 app.use(express.Router());
-app.use(serveStatic(path.join(__dirname, "public"))); // запуск статического файлового сервера, который с
+app.use(serveStatic(path.join(__dirname, "public"))); 
 
 app.get('/api', function (req, res) {
     res.send('API is running');
@@ -113,8 +113,8 @@ app.use(function(err, req, res, next){
     return;
 });
 
-app.listen(1337, function(){
-    log.info('Express server listening on port ' + config.get('port'));
+app.listen(server_port, server_ip_address, function(){
+  console.log( "Listening on " + server_ip_address + ", port " + server_port );
 });
-// отправляем сообщение
-log.debug('Сервер стартовал!');
+
+log.debug('Server have started');
