@@ -11,7 +11,7 @@
     "default_title": "mtgsale"
   },
   "content_scripts": [{
-      "matches": ["http://mtgsale.ru/home/buylist*"],
+      "matches": ["https://mtgsale.ru/home/buylist*"],
       "js":      ["jquery.min.js", "content.js"]
   }],
   "options_page": "options.html",

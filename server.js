@@ -28,9 +28,11 @@ app.get('/api', function (req, res) {
     res.send('API is running');
 });
 
+/*need to run tests*/
 app.get('/pagecount', function (req, res) {
     res.send('ok');
 });
+/*need to run tests*/
 
 app.get('/api/cards', function(req, res) {
     return CardSetModel.find(function (err, cardsets) {
