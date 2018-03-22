@@ -67,7 +67,7 @@ var sets = $('.sub').map(
 
 for (var i = 0; i < sets.length; i++) {
 	$.ajax({
-		url:'http://localhost:1337/api/cards',
+		url:'http://nodejs-mongo-persistent-magicpricetracker.193b.starter-ca-central-1.openshiftapps.com//api/cards',
 		data: JSON.stringify(sets[i]),
 		dataType:'json',
 		method:'post'
