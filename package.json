@@ -2,30 +2,33 @@
   "name": "MagicPriceTracker",
   "version": "0.1.0",
   "description": "parse, organize and store price for magic cards",
-  "homepage": "mergandevinsander.ru",
-  "license": "UNLICENSED",
+  "main": "server.js",
   "dependencies": {
-    "express": "^4.16.3",
-    "method-override": "^2.3.10",
-    "mongoose": "^5.0.11",
-    "nconf": "^0.10.0",
-    "path": "^0.12.7",
-    "winston": "^2.4.1",
     "chai": "^3.5.0",
     "chai-http": "^2.0.1",
     "ejs": "^2.4.1",
+    "express": "^4.13.4",
     "mocha": "^2.4.5",
     "mongodb": "^2.1.16",
     "morgan": "^1.7.0",
     "object-assign":"4.1.0"
   },
+  "engine": {
+    "node": "*",
+    "npm": "*"
+  },
   "scripts": {
     "start": "node server.js",
-    "test": "node test.js"
+    "test": "IP=0.0.0.0 PORT=3030 mocha --timeout 5000 tests/*_test.js"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/mergandevinsander/magicPriceTracker.git"
   },
-  "main": "server.js"
+  "author": "Steve Speicher <sspeiche@gmail.com>",
+  "license": "CC-BY-1.0",
+  "bugs": {
+    "url": "https://vk.com/mergandevinsander"
+  },
+  "homepage": "mergandevinsander.ru"
 }
