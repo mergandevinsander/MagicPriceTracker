@@ -13,11 +13,13 @@
     "winston": "^2.4.1"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "test.js"
   },
-  "main": "server.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/mergandevinsander/magicPriceTracker.git"
-  }
+  },
+  "main": "server.js",
+  "test": "test.js"
 }
