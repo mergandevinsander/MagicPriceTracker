@@ -1,29 +1,32 @@
 var express = require('express');
-var path  = require('path');
+//var path  = require('path');
 //var log             = require('./libs/log')(module);
-var log = { error: function(params) {}, debug : function(params) { }, info: function(params) { }  }
+var log = console;
 
 //var CardSetModel    = require('./libs/mongoose').CardSetModel;
-var CardSetModel = { find: function(params) {}, findOne: function(params) {} }
 
 var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080
 var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
 
 var app = express();
 
+Object.assign=require('object-assign');
+
+app.engine('html', require('ejs').renderFile);
+
 //var bodyParser = require('body-parser');
 //var methodOverride = require('method-override');
-var serveStatic = require('serve-static');
+//var serveStatic = require('serve-static');
 //var config          = require('./libs/config');
 
 /*app.use(bodyParser.urlencoded({ limit: '5000mb', extended: false,
     parameterLimit: 100000000 }));
 app.use(bodyParser.json({limit: '5000mb'}));
 app.use(methodOverride('X-HTTP-Method-Override'));*/
-app.use(express.Router());
-app.use(serveStatic(path.join(__dirname, "public"))); 
+//app.use(express.Router());
+//app.use(serveStatic(path.join(__dirname, "views"))); 
 
-app.get('/api', function (req, res) {
+/*app.get('/api', function (req, res) {
     res.send('API is running');
 });
 
@@ -107,17 +110,21 @@ app.use(function(req, res, next){
     log.debug('Not found URL: %s',req.url);
     res.send({ error: 'Not found' });
     return;
+});*/
+
+app.get('/', function (req, res) {
+  // try to initialize the db on every request if it's not already
+  // initialized.
+  res.render('index.html');
 });
 
 app.use(function(err, req, res, next){
     res.status(err.status || 500);
-    log.error('Internal error(%d): %s',res.statusCode,err.message);
+    //log.error('Internal error(%d): %s',res.statusCode,err.message);
     res.send({ error: err.message });
     return;
 });
 
-app.listen(server_port, server_ip_address, function(){
-  console.log( "Listening on " + server_ip_address + ", port " + server_port );
-});
+app.listen(server_port, server_ip_address);
 
-log.debug('Server have started');
+//log.debug('Server have started');
