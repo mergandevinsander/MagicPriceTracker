@@ -33,7 +33,7 @@ if(process.env.OPENSHIFT_MONGODB_DB_URL){
 
 
 var connect = function () {
-    mongoose.connect(url);
+    mongoose.connect(mongoURL);
 };
 connect();
 
