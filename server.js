@@ -1,10 +1,25 @@
-//  OpenShift sample Node application
-var express = require('express'),
-    app     = express();
+var express = require('express');
+var app     = express();
     
+/*need to run tests*/
 Object.assign=require('object-assign');
-
 app.engine('html', require('ejs').renderFile);
+/*need to run tests*/
+
+var path    = require('path');
+var log             = require('./libs/log')(module);
+var CardSetModel    = require('./libs/mongoose').CardSetModel;
+var bodyParser      = require('body-parser');
+var methodOverride  = require('method-override');
+var serveStatic     = require('serve-static');
+var config          = require('./libs/config');
+
+app.use(bodyParser.urlencoded({ limit: '5000mb', extended: false,
+    parameterLimit: 100000000 }));
+app.use(bodyParser.json({limit: '5000mb'}));
+app.use(methodOverride('X-HTTP-Method-Override'));
+app.use(express.Router());
+app.use(serveStatic(path.join(__dirname, "views")));
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
