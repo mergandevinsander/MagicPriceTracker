@@ -1,0 +1,23 @@
+{
+  "name": "MagicPriceTracker",
+  "version": "0.1.0",
+  "description": "parse, organize and store price for magic cards",
+  "homepage": "mergandevinsander.ru",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "express": "^4.16.3",
+    "method-override": "^2.3.10",
+    "mongoose": "^5.0.11",
+    "nconf": "^0.10.0",
+    "path": "^0.12.7",
+    "winston": "^2.4.1"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mergandevinsander/magicPriceTracker.git"
+  }
+}
