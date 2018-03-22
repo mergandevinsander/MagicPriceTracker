@@ -24,12 +24,88 @@ app.use(serveStatic(path.join(__dirname, "views")));
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
 
-/*app.get('/', function (req, res) {
-  res.render('index.html');
-});*/
+app.get('/api', function (req, res) {
+    res.send('API is running');
+});
 
-app.get('/pagecount', function (req, res) {
-  res.send('{ pageCount: -1 }');
+app.get('/api/cards', function(req, res) {
+    return CardSetModel.find(function (err, cardsets) {
+        if (!err) {
+            return res.send(cardsets);
+        } else {
+            console.error('Internal error(%d): %s',res.statusCode, err.message);
+            return res.status(500).send({ error: 'Server error' });
+        }
+    });
+});
+
+app.post('/api/cards', function(req, res) {
+	//Some peace of shit - I dont know why it so hard to parse json
+	var diff;
+	for (var cid in req.body) {
+		diff= JSON.parse(cid);
+	}
+
+	CardSetModel.findOne({ id: diff.id }, function (err, set) {
+        if(!set) {
+		    set = new CardSetModel({
+		        id: diff.id,
+		        title: diff.t
+		    });
+            
+        	for (var cid in diff.c) {
+
+				var card = diff.c[cid];
+				set.cards.push({
+					id: card.id,
+				    price: card.p,
+				    rarity: card.r,
+				    setId: card.sid,
+				    title: card.t,
+				    titleRus: card.tr,
+				    priceHistory: [{
+				    	date: new Date(),
+				    	price: card.p
+				    }]
+				});
+			};
+
+
+	        return set.save(function (err) {
+	            if (!err) {
+	                log.info("set added");
+	            } else {
+	                log.error('Internal error(%d): %s',res.statusCode,err.message);
+	            }
+	        });
+
+        } else {
+
+			for (var j = set.cards.length - 1; j >= 0; j--) {
+				var card = set.cards[j];
+				if (diff.c[card.id].p != card.price) {
+					card.priceHistory.push({ date: new Date(), price: diff.c[card.id].p });
+					card.price = diff.c[card.id].p;
+				}
+			};
+
+        }
+
+        return set.save(function (err) {
+            if (err) {
+                log.error('Internal error(%d): %s',res.statusCode,err.message);
+            }
+        });
+
+    }); 
+	
+	return res.send({ status: 'OK' });
+});
+
+app.use(function(req, res, next){
+    console.log('Not found URL: %s',req.url);
+    res.status(404).send({ error: 'Not found' });
+    return;
 });
 
 app.use(function(err, req, res, next){
