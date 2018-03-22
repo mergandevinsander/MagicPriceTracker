@@ -5,15 +5,11 @@
   "main": "server.js",
   "dependencies": {
     "express": "^4.16.3",
-
-    /*need to run tests*/
     "chai": "^3.5.0",
-    "chai-http": "^2.0.1",   
+    "chai-http": "^2.0.1",
     "mocha": "^2.4.5",
-    "object-assign":"4.1.0",
+    "object-assign": "4.1.0",
     "ejs": "^2.4.1",
-    /*need to run tests*/
-
     "method-override": "^2.3.10",
     "mongoose": "^5.0.11",
     "nconf": "^0.10.0",
