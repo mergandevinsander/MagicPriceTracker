@@ -1,22 +1,25 @@
 var express = require('express');
 var path  = require('path');
-var log             = require('./libs/log')(module);
-var CardSetModel    = require('./libs/mongoose').CardSetModel;
+//var log             = require('./libs/log')(module);
+var log = { error: function(params) {}, debug : function(params) { }, info: function(params) { }  }
+
+//var CardSetModel    = require('./libs/mongoose').CardSetModel;
+var CardSetModel = { find: function(params) {}, findOne: function(params) {} }
 
 var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080
 var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
 
 var app = express();
 
-var bodyParser = require('body-parser');
-var methodOverride = require('method-override');
+//var bodyParser = require('body-parser');
+//var methodOverride = require('method-override');
 var serveStatic = require('serve-static');
-var config          = require('./libs/config');
+//var config          = require('./libs/config');
 
-app.use(bodyParser.urlencoded({ limit: '5000mb', extended: false,
+/*app.use(bodyParser.urlencoded({ limit: '5000mb', extended: false,
     parameterLimit: 100000000 }));
 app.use(bodyParser.json({limit: '5000mb'}));
-app.use(methodOverride('X-HTTP-Method-Override'));
+app.use(methodOverride('X-HTTP-Method-Override'));*/
 app.use(express.Router());
 app.use(serveStatic(path.join(__dirname, "public"))); 
 
