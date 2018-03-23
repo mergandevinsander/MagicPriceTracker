@@ -28,12 +28,6 @@ app.get('/api', function (req, res) {
     res.send('API is running');
 });
 
-/*need to run tests*/
-app.get('/pagecount', function (req, res) {
-    res.send('ok');
-});
-/*need to run tests*/
-
 app.get('/api/cards', function(req, res) {
     return CardSetModel.find(function (err, cardsets) {
         if (!err) {
@@ -119,7 +113,7 @@ app.use(function(err, req, res, next){
   res.status(500).send('Something bad happened!');
 });
 
-app.listen(port, ip);
+app.listen(config.get("server:port"), config.get("server:ip"));
 console.log('Server running on http://%s:%s', ip, port);
 
 module.exports = app;

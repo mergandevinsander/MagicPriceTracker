@@ -1,6 +1,6 @@
 //chrome.storage.local.remove('sets');
 
-angular.module('mtgSaleExtension', ['ui.bootstrap'])
+angular.module('mtgPriceTracker', ['ui.bootstrap'])
 .filter('page', function () {
     return function (arr, page, items) {
         var start = (page - 1) * items;

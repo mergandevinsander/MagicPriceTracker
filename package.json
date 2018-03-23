@@ -9,17 +9,11 @@
     "mongoose": "^5.0.11",
     "nconf": "^0.10.0",
     "path": "^0.12.7",
-    "winston": "^2.4.1",
-
-    "chai": "^3.5.0",
-    "chai-http": "^2.0.1",   
-    "mocha": "^2.4.5",
-    "object-assign":"4.1.0",
-    "ejs": "^2.4.1"
+    "winston": "^2.4.1"
   },
   "scripts": {
     "start": "node server.js",
-    "test": "IP=0.0.0.0 PORT=3030 mocha --timeout 5000 tests/*_test.js"
+    "test": ""
   },
   "repository": {
     "type": "git",
