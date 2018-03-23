@@ -4,7 +4,7 @@ nconf.argv()
     .env()
     .file({ file: './config.json' });
 
-var mongoURL = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL,
+var mongoURL = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL;
 
 /*if (mongoURL == null && process.env.DATABASE_SERVICE_NAME) {
   var mongoServiceName = process.env.DATABASE_SERVICE_NAME.toUpperCase(),
@@ -27,7 +27,7 @@ var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
 
 nconf.set('database:connectionstring', mongoURL);
-nconf.set('server:ip', id);
 nconf.set('server:port', port);
+nconf.set('server:ip', ip);
 
 module.exports = nconf;
