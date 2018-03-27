@@ -4,9 +4,9 @@ nconf.argv()
     .env()
     .file({ file: './config.json' });
 
-var mongoURL = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL || 'mongodb://sa:rxwdMFtSwzdodwNW@cluster0-shard-00-00-zblou.mongodb.net:27017,cluster0-shard-00-01-zblou.mongodb.net:27017,cluster0-shard-00-02-zblou.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin';
+var mongoURL = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL;// || 'mongodb://sa:rxwdMFtSwzdodwNW@cluster0-shard-00-00-zblou.mongodb.net:27017,cluster0-shard-00-01-zblou.mongodb.net:27017,cluster0-shard-00-02-zblou.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin';
 
-/*if (mongoURL == null && process.env.DATABASE_SERVICE_NAME) {
+if (mongoURL == null && process.env.DATABASE_SERVICE_NAME) {
   var mongoServiceName = process.env.DATABASE_SERVICE_NAME.toUpperCase(),
       mongoHost = process.env[mongoServiceName + '_SERVICE_HOST'],
       mongoPort = process.env[mongoServiceName + '_SERVICE_PORT'],
@@ -21,10 +21,10 @@ var mongoURL = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL || 
     mongoURL += mongoHost + ':' +  mongoPort + '/' + mongoDatabase;
 
   }
-}*/
+}
 
-var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 1337,
-    ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
+    ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
 
 nconf.set('database:connectionString', mongoURL);
 nconf.set('server:ip', ip);
