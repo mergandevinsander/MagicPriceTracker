@@ -30,4 +30,8 @@ nconf.set('database:connectionString', mongoURL);
 nconf.set('server:ip', ip);
 nconf.set('server:port', port);
 
+console.log(ip);
+console.log(port);
+console.log(mongoURL);
+
 module.exports = nconf;

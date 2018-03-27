@@ -6,13 +6,13 @@ var app     = express();
 //app.engine('html', require('ejs').renderFile);
 /*need to run tests*/
 
-var path    = require('path');
+var path            = require('path');
+var config          = require('./libs/config');
 var log             = require('./libs/log')(module);
 var CardSetModel    = require('./libs/mongoose').CardSetModel;
 var bodyParser      = require('body-parser');
 var methodOverride  = require('method-override');
 var serveStatic     = require('serve-static');
-var config          = require('./libs/config');
 
 app.use(bodyParser.urlencoded({ limit: '5000mb', extended: false,
     parameterLimit: 100000000 }));
