@@ -1,10 +1,5 @@
 var express = require('express');
 var app     = express();
-    
-/*need to run tests*/
-//Object.assign=require('object-assign');
-//app.engine('html', require('ejs').renderFile);
-/*need to run tests*/
 
 var path            = require('path');
 var config          = require('./libs/config');
