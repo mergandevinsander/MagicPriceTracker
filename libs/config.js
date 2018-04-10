@@ -29,7 +29,7 @@ else if (mongoURL == null) {
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || nconf.get('server:port'),
     ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
-
+    
 nconf.set('database:connectionstring', mongoURL);
 nconf.set('server:port', port);
 nconf.set('server:ip', ip);
