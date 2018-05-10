@@ -21,7 +21,7 @@ app.get('/api', function (req, res) {
 });
 
 app.get('/api/cards', function(req, res) {
-    return CardSetModel.find(function (err, cardsets) {
+    return CardSetModel.find().limit(3).exec(function (err, cardsets) {
         if (!err) {
             return res.send(cardsets);
         } else {
