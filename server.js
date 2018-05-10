@@ -21,8 +21,10 @@ app.get('/api', function (req, res) {
 });
 
 app.get('/api/cards', function(req, res) {
+	console.log(new Date().toLocaleTimeString() + ': start loading card set');
     return CardSetModel.find().limit(3).exec(function (err, cardsets) {
         if (!err) {
+			console.log(new Date().toLocaleTimeString() + ': return result set');
             return res.send(cardsets);
         } else {
             console.error('Internal error(%d): %s',res.statusCode, err.message);
