@@ -1,13 +1,12 @@
 var express = require('express');
 var app     = express();
-
 var path            = require('path');
-var config          = require('./libs/config');
 var log             = require('./libs/log')(module);
 var CardSetModel    = require('./libs/mongoose').CardSetModel;
 var bodyParser      = require('body-parser');
 var methodOverride  = require('method-override');
 var serveStatic     = require('serve-static');
+var config          = require('./libs/config');
 
 app.use(bodyParser.urlencoded({ limit: '5000mb', extended: false,
     parameterLimit: 100000000 }));
@@ -21,10 +20,8 @@ app.get('/api', function (req, res) {
 });
 
 app.get('/api/cards', function(req, res) {
-	console.log(new Date().toLocaleTimeString() + ': start loading card set');
-    return CardSetModel.find().limit(3).exec(function (err, cardsets) {
+    return CardSetModel.find().exec(function (err, cardsets) {
         if (!err) {
-			console.log(new Date().toLocaleTimeString() + ': return result set');
             return res.send(cardsets);
         } else {
             console.error('Internal error(%d): %s',res.statusCode, err.message);

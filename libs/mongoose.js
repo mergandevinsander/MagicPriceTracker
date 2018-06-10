@@ -1,11 +1,7 @@
 var mongoose    = require('mongoose');
-//var log         = require('./log')(module);
 var config      = require('./config');
 
-var connect = function () {
-    mongoose.connect(config.get('database:connectionString'));
-};
-connect();
+mongoose.connect(config.get("database:connectionString"));
 
 var db = mongoose.connection;
 
