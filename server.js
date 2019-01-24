@@ -7,6 +7,7 @@ var bodyParser      = require('body-parser');
 var methodOverride  = require('method-override');
 var serveStatic     = require('serve-static');
 var config          = require('./libs/config');
+var https           = require('https');
 
 app.use(bodyParser.urlencoded({ limit: '5000mb', extended: false,
     parameterLimit: 100000000 }));
@@ -14,6 +15,31 @@ app.use(bodyParser.json({limit: '5000mb'}));
 app.use(methodOverride('X-HTTP-Method-Override'));
 app.use(express.Router());
 app.use(serveStatic(path.join(__dirname, "views")));
+
+app.get('/api/mtgsale', function (req, res) {
+	var options = {
+	  hostname: 'mtgsale.ru',
+	  port: 443,
+	  path: '/home/buylist',
+	  method: 'GET',
+	  rejectUnauthorized: false
+	};
+
+	https.get(options, (httpsRes) => {
+
+		var data = '';
+
+		httpsRes.on('data', (d) => {
+			data += d;
+		});
+
+		httpsRes.on('end', () => {
+			res.set('Content-Type', 'text/html');
+			res.send(data);
+		});
+
+	});
+});
 
 app.get('/api', function (req, res) {
     res.send('API is running');
