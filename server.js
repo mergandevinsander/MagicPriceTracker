@@ -1,5 +1,5 @@
-var express = require('express');
-var app     = express();
+var express         = require('express');
+var app             = express();
 var path            = require('path');
 var log             = require('./libs/log')(module);
 var CardSetModel    = require('./libs/mongoose').CardSetModel;
@@ -7,46 +7,23 @@ var bodyParser      = require('body-parser');
 var methodOverride  = require('method-override');
 var serveStatic     = require('serve-static');
 var config          = require('./libs/config');
-var https           = require('https');
+var priceParser     = require('./libs/priceParser');
+var requestPromise  = require('request-promise');
+var cheerio         = require('cheerio');
 
-app.use(bodyParser.urlencoded({ limit: '5000mb', extended: false,
-    parameterLimit: 100000000 }));
+app.use(bodyParser.urlencoded({ limit: '5000mb', extended: false, parameterLimit: 100000000 }));
+
 app.use(bodyParser.json({limit: '5000mb'}));
 app.use(methodOverride('X-HTTP-Method-Override'));
 app.use(express.Router());
 app.use(serveStatic(path.join(__dirname, "views")));
 
-app.get('/api/mtgsale', function (req, res) {
-	var options = {
-	  hostname: 'mtgsale.ru',
-	  port: 443,
-	  path: '/home/buylist',
-	  method: 'GET',
-	  rejectUnauthorized: false
-	};
-
-	https.get(options, (httpsRes) => {
-
-		var data = '';
-
-		httpsRes.on('data', (d) => {
-			data += d;
-		});
-
-		httpsRes.on('end', () => {
-			res.set('Content-Type', 'text/html');
-			res.send(data);
-		});
-
-	});
-});
-
-app.get('/api', function (req, res) {
+app.get('/api', (req, res) => {
     res.send('API is running');
 });
 
-app.get('/api/cards', function(req, res) {
-    return CardSetModel.find().exec(function (err, cardsets) {
+app.get('/api/cards', (req, res) => {
+    return CardSetModel.find().exec( (err, cardsets) => {
         if (!err) {
             return res.send(cardsets);
         } else {
@@ -56,76 +33,66 @@ app.get('/api/cards', function(req, res) {
     });
 });
 
-app.post('/api/cards', function(req, res) {
-	//Some peace of shit - I dont know why it so hard to parse json
+app.get('/api/parseSale', (req, res) => {
+	requestPromise({
+	  uri: 'https://mtgsale.ru/home/buylist',
+	  method: 'GET',
+	  rejectUnauthorized: false
+	}).then( (htmlString) => {
+		var sets = priceParser.parseSale(htmlString);
+
+		for (var i = 0; i < sets.length; i++) {
+			var diff = sets[i];
+			addSet(sets[i]);
+		}
+		res.send({ status: 'OK'});
+    });
+});
+
+var addSet = (diff) => {
 	var diff;
-	for (var cid in req.body) {
-		diff= JSON.parse(cid);
-	}
 
-	CardSetModel.findOne({ id: diff.id }, function (err, set) {
+	CardSetModel.findOne({ id: diff.id }, (err, set) => {
         if(!set) {
-		    set = new CardSetModel({
-		        id: diff.id,
-		        title: diff.t
-		    });
-            
-        	for (var cid in diff.c) {
+		    set = new CardSetModel(diff);
 
-				var card = diff.c[cid];
-				set.cards.push({
-					id: card.id,
-				    price: card.p,
-				    rarity: card.r,
-				    setId: card.sid,
-				    title: card.t,
-				    titleRus: card.tr,
-				    priceHistory: [{
-				    	date: new Date(),
-				    	price: card.p
-				    }]
-				});
-			};
-
-
-	        return set.save(function (err) {
+	        return set.save( (err) => {
 	            if (!err) {
 	                log.info("set added");
 	            } else {
-	                log.error('Internal error(%d): %s',res.statusCode,err.message);
+	                log.error('Internal error: %s',err.message);
 	            }
 	        });
 
         } else {
+        	var dict = priceParser.toDictionary(diff.cards, 'id');
 
 			for (var j = set.cards.length - 1; j >= 0; j--) {
 				var card = set.cards[j];
-				if (diff.c[card.id].p != card.price) {
-					card.priceHistory.push({ date: new Date(), price: diff.c[card.id].p });
-					card.price = diff.c[card.id].p;
+				var newCard = dict[card.id];
+				if (newCard.price != card.price) {
+					card.priceHistory = card.priceHistory.concat(newCard.priceHistory);
+					card.price = newCard.price;
 				}
 			};
-
         }
 
-        return set.save(function (err) {
+        return set.save( (err) => {
             if (err) {
-                log.error('Internal error(%d): %s',res.statusCode,err.message);
+                log.error('Internal error: %s',err.message);
             }
         });
 
     }); 
-	
-	return res.send({ status: 'OK' });
-});
+};
 
-app.use(function(req, res, next){
+app.use( (req, res, next) => {
     console.log('Not found URL: %s',req.url);
     res.status(404).send({ error: 'Not found' });
     return;
 });
 
-app.use(function(err, req, res, next){
+app.use( (err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something bad happened!');
 });
