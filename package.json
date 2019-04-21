@@ -15,7 +15,9 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": ""
+    "test": "",
+    "install-windows-service": "winser -i",
+    "uninstall-windows-service": "winser -r"
   },
   "repository": {
     "type": "git",

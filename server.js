@@ -87,9 +87,9 @@ var addSet = (diff) => {
 };
 
 app.use( (req, res, next) => {
-    console.log('Not found URL: %s',req.url);
-    res.status(404).send({ error: 'Not found' });
-    return;
+  console.log('Not found URL: %s',req.url);
+  res.status(404).send({ error: 'Not found' });
+  return;
 });
 
 app.use( (err, req, res, next) => {
@@ -97,7 +97,7 @@ app.use( (err, req, res, next) => {
   res.status(500).send('Something bad happened!');
 });
 
-app.listen(config.get("server:port"), config.get("server:ip"));
+app.listen(config.get("server:port"));//, config.get("server:ip"));
 console.log('Server running on http://%s:%s', config.get("server:ip"), config.get("server:port"));
 
 module.exports = app;
