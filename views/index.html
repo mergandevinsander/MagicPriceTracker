@@ -3,53 +3,16 @@
   <head>
     <meta charset="utf-8">
     <title>mtg price tracker</title>
-
     <link href="bootstrap.min.css" rel="stylesheet">
+    <link href="main.css" rel="stylesheet">
     <script src="angular.js"></script>
     <script src="ui-bootstrap.js"></script>
     <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-2.1.3.js"></script>
     <script src="indexController.js"></script>
   </head>
   <body>
-    <style>
-      .price {    
-        color: white;
-        font: bold 24px Helvetica, Sans-Serif; 
-        position: absolute;
-        right: 5px;
-        bottom: 33px;
-        background: rgba(0, 0, 0, 0.7);
-        opacity: 0.7;
-        padding: 10px;
-      }
-      .card { 
-        float: left;
-        position: relative; 
-         /*height: 430px;*/
-      }
-      .inLib {
-        position: absolute;
-        right: 5px;
-        bottom: 120px;
-      }
-      .card .name {
-        left: 0px;
-        top: 0px;
-        z-index: 1000;
-        letter-spacing: 0px;
-        pointer-events: none;
-        color: transparent;
-        font-size: 13px;
-        position: absolute;
-        padding: 8.75% 0 0 8%;
-        width: 100%;
-      }
-      body { padding-top: 40px; }
-    </style>
-    <br />
     <script type="text/ng-template" id="myTooltipTemplate.html">
       <div ng-repeat="h in card.priceHistory">{{h.price}} {{h.date | date}}</div>
-    </script>
     </script>
     <div class="col-md-12" ng-controller="optionsController" ng-cloack>
       <nav class="navbar navbar-default navbar-fixed-top">
@@ -57,8 +20,6 @@
           <form class="form-inline">
             <div class="form-group">
               <label for="set">Set</label>
-              <!--<select id="set" ng-options="item as item.title for item in sets" ng-model="filterModel.set" class="form-control">
-              </select>-->
               <input type="text" ng-model="filterModelSet" id="set" 
                    uib-typeahead="item as item.title for item in sets | filter:{title:$viewValue}"  class="form-control" typeahead-min-length="0"
                    typeahead-on-select="filterModel.set = filterModelSet">

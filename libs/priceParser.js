@@ -42,15 +42,6 @@ function GetID(id, set) {
     return id;
 };
 
-function toDictionary(array, idColumn) {
-    var dict = {};
-    for (var i = array.length - 1; i >= 0; i--) {
-        dict[array[i][idColumn]] = array[i];
-    };
-    return dict;
-};
-
-
 function parseSale(htmlString) {
     var $ = cheerio.load(htmlString);
 
@@ -78,5 +69,4 @@ function parseSale(htmlString) {
         }).toArray();
 }
 
-module.exports.toDictionary = toDictionary;
 module.exports.parseSale = parseSale;
