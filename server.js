@@ -3,6 +3,7 @@ var app             = express();
 var path            = require('path');
 var log             = require('./libs/log')(module);
 var CardSetModel    = require('./libs/mongoose').CardSetModel;
+var CardSetList     = require('./libs/mongoose').CardSetList;
 var bodyParser      = require('body-parser');
 var methodOverride  = require('method-override');
 var serveStatic     = require('serve-static');
@@ -33,6 +34,39 @@ app.get('/api/cards', (req, res) => {
     });
 });
 
+app.get('/api/sets', (req, res) => {
+    return CardSetList.find().exec( (err, cardsets) => {
+        if (!err) {
+            return res.send(cardsets);
+        } else {
+            console.error('Internal error(%d): %s',res.statusCode, err.message);
+            return res.status(500).send({ error: 'Server error' });
+        }
+    });
+});
+
+app.get('/api/set/:id', (req, res) => {
+    return CardSetModel.findOne({ id: req.params.id }).exec( (err, cardsets) => {
+        if (!err) {
+            return res.send(cardsets);
+        } else {
+            console.error('Internal error(%d): %s',res.statusCode, err.message);
+            return res.status(500).send({ error: 'Server error' });
+        }
+    });
+});
+
+app.get('/api/set/:id/card/:cardId/setInLib/:inLib', (req, res) => {
+  CardSetModel.findOne({ id: req.params.id }).exec( (err, set) => {
+    var card = set.cards.filter(function (card) {
+      return card.id == req.params.cardId
+    }).pop()
+    if (card) card.inLib = req.params.inLib
+    set.save( (err) => { if (err) log.error('Internal error: %s',err.message) })
+  })
+  return res.send({ status: 'OK'})
+});
+
 app.get('/api/parseSale', (req, res) => {
 	requestPromise({
 	  uri: 'https://mtgsale.ru/home/buylist',
@@ -46,11 +80,18 @@ app.get('/api/parseSale', (req, res) => {
 			addSet(sets[i]);
 		}
 		res.send({ status: 'OK'});
-    });
+  });
 });
 
 var addSet = (diff) => {
 	var diff;
+  CardSetList.findOne({ id: diff.id }, (err, set) => {
+    if(set) return; 
+    set = new CardSetList({ id: diff.id, title: diff.title });
+    return set.save( (err) => {
+      if (err) log.error('Internal error: %s',err.message);
+    });
+  });
 
 	CardSetModel.findOne({ id: diff.id }, (err, set) => {
         if(!set) {
@@ -67,14 +108,14 @@ var addSet = (diff) => {
         } else {
         	var dict = priceParser.toDictionary(diff.cards, 'id');
 
-			for (var j = set.cards.length - 1; j >= 0; j--) {
-				var card = set.cards[j];
-				var newCard = dict[card.id];
-				if (newCard.price != card.price) {
-					card.priceHistory = card.priceHistory.concat(newCard.priceHistory);
-					card.price = newCard.price;
-				}
-			};
+    			for (var j = set.cards.length - 1; j >= 0; j--) {
+    				var card = set.cards[j];
+    				var newCard = dict[card.id];
+    				if (newCard.price != card.price) {
+    					card.priceHistory = card.priceHistory.concat(newCard.priceHistory);
+    					card.price = newCard.price;
+    				}
+    			};
         }
 
         return set.save( (err) => {

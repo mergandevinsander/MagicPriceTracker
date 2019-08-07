@@ -16,8 +16,8 @@
         color: white;
         font: bold 24px Helvetica, Sans-Serif; 
         position: absolute;
-        left: 5px;
-        bottom: 5px;
+        right: 5px;
+        bottom: 33px;
         background: rgba(0, 0, 0, 0.7);
         opacity: 0.7;
         padding: 10px;
@@ -27,12 +27,22 @@
         position: relative; 
          /*height: 430px;*/
       }
-      .card .name {
+      .inLib {
         position: absolute;
-        opacity: 0;
-        left: 5px;
-        top: 5px;
-
+        right: 5px;
+        bottom: 120px;
+      }
+      .card .name {
+        left: 0px;
+        top: 0px;
+        z-index: 1000;
+        letter-spacing: 0px;
+        pointer-events: none;
+        color: transparent;
+        font-size: 13px;
+        position: absolute;
+        padding: 8.75% 0 0 8%;
+        width: 100%;
       }
       body { padding-top: 40px; }
     </style>
@@ -73,7 +83,14 @@
               <input type="number" class="form-control" id="width" min="50" step="10" placeholder="50" ng-model="filterModel.width">
             </div>
             <div class="form-group">
-                <label class="btn btn-default" ng-class="{ 'btn-info': filterModel.z }"  ng-model="filterModel.z" uib-btn-checkbox>was zero</label>
+                <label for="width">was 0 at</label>
+                <input type="date" class="form-control" ng-model="filterModel.z">
+            </div>
+            <div class="form-group">
+              <label class="btn btn-default" ng-class="{ 'btn-primary': filterModel.inLib }"  ng-model="filterModel.inLib" uib-btn-checkbox>in lib only</label>
+            </div>
+            <div class="form-group">
+              <label class="btn btn-default" ng-class="{ 'btn-warning': filterModel.editLib }"  ng-model="filterModel.editLib" uib-btn-checkbox>edit lib</label>
             </div>
             <div class="form-group pull-right" style="padding-right: 10px">
                 <button class="btn btn-default" ng-hide="true" ng-click="updatePrice()" ng-disabled="updatingPrice">update price</button>
@@ -82,24 +99,13 @@
         </div>
       </nav>
       <div class="row">
-        <div ng-repeat="card in sets | filter:setFilter(filterModel) | selectmany:'cards' | filter:cardFilter(filterModel) | page:pages.currentPage:pages.itemsPerPage" class="card" >
-
-              <img ng-src="http://mtgsale.ru/cardImage/{{card.setId}}/ENG/{{card.id}}.jpg" class="img-thumbnail" style="width:{{filterModel.width}}px">
-              <span class="price" style="font-size:{{filterModel.width/4}}px"  uib-tooltip-template="'myTooltipTemplate.html'" tooltip-placement="bottom">{{ card.price }} ₽</span>
-              <span class="name">{{card.title}}</span>
+        <div ng-repeat="card in set.cards | filter:cardFilter(filterModel) | page:pages.currentPage:pages.itemsPerPage" sort=" | orderBy:'price':true" class="card" >
+          <img ng-src="http://mtgsale.ru/cardImage/{{card.setId}}/ENG/{{card.id}}.jpg" class="img-thumbnail" style="width:{{filterModel.width}}px">
+          <button ng-if="filterModel.editLib" class="btn inLib" ng-class="{ 'btn-success' : card.inLib}" ng-click="setInLib(card, !card.inLib)"><span class="glyphicon glyphicon-file"></button>
+          <span class="price" style="font-size:{{filterModel.width/4}}px"  uib-tooltip-template="'myTooltipTemplate.html'" tooltip-placement="bottom">{{ card.price }} ₽</span>
+          <span class="name">{{card.title}}</span>
         </div>
-
       </div>
-        <div uib-pagination direction-links="false"
-                    
-                    style="display: block"
-                    ng-show="(sets | filter:setFilter(filterModel) | selectmany:'c' | filter:cardFilter(filterModel)).length > pages.itemsPerPage"
-                    total-items="(sets | filter:setFilter(filterModel) | selectmany:'c' | filter:cardFilter(filterModel)).length"
-                    ng-model="pages.currentPage"
-                    num-pages="smallnumPages"
-                    items-per-page="pages.itemsPerPage">
-
-        </div uib-pagination>
     </div>
   </body>
 </html>

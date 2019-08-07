@@ -24,26 +24,39 @@ angular.module('mtgPriceTracker', ['ui.bootstrap'])
 		r: true,
 		m: true,
 		s: true,
-		width: 230
+		width: 230,
+    z: new Date('1000-01-01')
 	}
 
 	$scope.pages = {
-                itemsPerPage: 400,
-                currentPage: 1,
-                totalItems: 0
-            }
+    itemsPerPage: 400,
+    currentPage: 1,
+    totalItems: 0
+  }
 
-    $http({method: 'GET', url: '/api/cards'}).
-        then(function success(data) {
-        	$scope.sets = data.data
+  $http({method: 'GET', url: '/api/sets'}).
+      then(function success(data) {
+      	$scope.sets = data.data
+  })
+
+  $scope.$watch('filterModel.set', function() {
+    $http({method: 'GET', url: '/api/set/' + $scope.filterModel.set.id }).
+      then(function success(data) {
+        $scope.set = data.data
     })
+  })
 
 	$scope.cardFilter = (criteria) => {
 	  return (item) => {
 	  	if (!item){
 	  		return true
 	  	}
-	    return item.price >= criteria.price && criteria[item.rarity] && (!criteria.z || item.priceHistory.length < 2 || item.priceHistory[item.priceHistory.length - 2].price == 0)
+      if (criteria.inLib && !item.inLib) return false
+      if (item.price < criteria.price || !criteria[item.rarity])
+        return false;
+      var i = 0;
+      for (i = 0; i < item.priceHistory.length && new Date(item.priceHistory[i].date) <= criteria.z; i++);
+      return i == 0 || item.priceHistory[i - 1].price == 0;
 	  }
 	}
 
@@ -58,7 +71,7 @@ angular.module('mtgPriceTracker', ['ui.bootstrap'])
 	    $http({method: 'GET', url: '/api/parseSale'}).
 	        then(function success(data) {
 
-			    $http({method: 'GET', url: '/api/cards'}).
+			    $http({method: 'GET', url: '/api/sets'}).
 			        then(function success(data) {
 			        	$scope.sets = data.data
 			    })
@@ -66,4 +79,11 @@ angular.module('mtgPriceTracker', ['ui.bootstrap'])
 				$scope.updatingPrice = false
 	    })
 	}
+
+  $scope.setInLib = (card, inLib) => {
+    $http({method: 'GET', url: '/api/set/' + card.setId + '/card/' + card.id + '/setInLib/' + inLib }).
+      then(function success(data) {
+        card.inLib = inLib
+    })
+  }
 }])

@@ -27,7 +27,8 @@ var Card  = new Schema({
     setId: { type: String, required: true },
     title: { type: String, required: true },
     titleRus: { type: String },
-    priceHistory: [PriceHistory]
+    priceHistory: [PriceHistory],
+    inLib: { type: Boolean }
 });
 
 var CardSet = new Schema({
@@ -36,7 +37,13 @@ var CardSet = new Schema({
     cards: [Card]
 });
 
+var MtgSet = new Schema({
+    id: { type: String, required: true },
+    title: { type: String, required: true }
+});
 
 var CardSetModel = mongoose.model('CardSet', CardSet);
+var CardSetList = mongoose.model('MtgSet', MtgSet);
 
 module.exports.CardSetModel = CardSetModel;
+module.exports.CardSetList = CardSetList;
