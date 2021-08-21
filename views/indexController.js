@@ -18,7 +18,7 @@ angular.module('mtgPriceTracker', ['ui.bootstrap'])
 .controller('optionsController', ['$scope', '$http', ($scope, $http) => {
 	$scope.filterModel = { 
 		price : 0.01, 
-		set: { id:'grn' },
+		set: { id:'eld' },
 		c: true,
 		u: true,
 		r: true,

@@ -11,7 +11,7 @@ var config          = require('./libs/config')
 var priceParser     = require('./libs/priceParser')
 var requestPromise  = require('request-promise')
 var cheerio         = require('cheerio')
-var cardService     = require('./lib/cardService')
+var cardService     = require('./libs/cardService')
 
 app.use(bodyParser.urlencoded({ limit: '5000mb', extended: false, parameterLimit: 100000000 }))
 
@@ -25,15 +25,15 @@ app.get('/api', (req, res) => {
 })
 
 app.get('/api/sets', (req, res) => {
-  var sets = cardService.getSets()
-  if (sets) res.send(sets)
-  res.status(500).send({ error: 'Server error' })
+  cardService.getSets((sets) => {
+    res.send(sets)
+  })
 })
 
 app.get('/api/set/:id', (req, res) => {
-  var sets = cardService.getSet(req.params.id)
-  if (sets) res.send(sets)
-  res.status(500).send({ error: 'Server error' })
+  cardService.getSet(req.params.id, (set) => {
+    res.send(set)
+  })
 })
 
 app.get('/api/set/:setId/card/:cardId/setInLib/:inLib', (req, res) => {
@@ -64,7 +64,7 @@ app.use( (req, res, next) => {
 
 app.use( (err, req, res, next) => {
   log.error(err.stack)
-  res.status(500).send('Something bad happened!')
+  res.status(500).send(err)
 })
 
 app.listen(config.get("server:port"))//, config.get("server:ip"))

@@ -12,27 +12,27 @@ function toDictionary(array, idColumn) {
 };
 
 module.exports = {
-  getSets: () => {
+  getSets: (callBack) => {
   return CardSetList.find().exec( (err, cardsets) => {
-    if (err) log.error('Internal error: %s', err.message)
-    return cardsets
-    })
-  }
-
-  getSet: (setId) => {
-    return CardSetModel.findOne({ id: setId }).exec( (err, cardSet) => {
       if (err) log.error('Internal error: %s', err.message)
-      return cardSet
+      callBack(cardsets)
     })
-  }
+  },
+
+  getSet: (setId, callBack) => {
+    return CardSetModel.findOne({ id: setId }).exec( (err, cardSet) => {
+      if (err) console.error('Internal error: %s', err.message)
+      callBack(cardSet)
+    })
+  },
 
   setInLib: (setId, cardId, inLib) => {
   	CardSetModel.findOne({ id: setId }).exec( (err, set) => {
       var card = set.cards.filter( (card) => { return card.id == cardId } ).pop()
       if (card) card.inLib = inLib
-      set.save( (err) => { if (err) log.error('Internal error: %s',err.message) })
+      set.save( (err) => { if (err) console.error('Internal error: %s',err.message) })
     })
-  }
+  },
 
   addAndLogSet: (diff) => {
     var diff
@@ -40,14 +40,14 @@ module.exports = {
       if(set) return 
       set = new CardSetList({ id: diff.id, title: diff.title })
       return set.save( (err) => {
-       if (err) log.error('Internal error: %s',err.message)
+       if (err) console.error('Internal error: %s',err.message)
       })
     })
 
     CardSetModel.findOne({ id: diff.id }, (err, set) => {
       if(!set) {
       	set = new CardSetModel(diff)
-      	return set.save( (err) => { if (err) log.error('Internal error: %s',err.message) })
+      	return set.save( (err) => { if (err) console.error('Internal error: %s',err.message) })
       } 
 
       var dict = toDictionary(diff.cards, 'id')
@@ -61,7 +61,7 @@ module.exports = {
       }
 
       return set.save( (err) => {
-      	if (err) log.error('Internal error: %s',err.message)
+      	if (err) console.error('Internal error: %s',err.message)
       })
     })
   }
