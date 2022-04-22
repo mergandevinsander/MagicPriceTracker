@@ -8,7 +8,7 @@
     "express": "^4.16.3",
     "method-override": "^2.3.10",
     "mongoose": "^5.1.4",
-    "nconf": "^0.10.0",
+    "nconf": "^0.11.4",
     "path": "^0.12.7",
     "request-promise": "^4.2.2",
     "winston": "^2.4.1"
