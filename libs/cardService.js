@@ -1,7 +1,7 @@
 var CardSetModel    = require('./mongoose').CardSetModel
 var CardSetList     = require('./mongoose').CardSetList
 var priceParser     = require('./priceParser')
-var log             = require('./log')(module)
+var log             = require('./log')
 
 function toDictionary(array, idColumn) {
     var dict = {};
