@@ -1,6 +1,6 @@
 {
   "name": "MagicPriceTracker",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "parse, organize and store price for magic cards",
   "main": "server.js",
   "dependencies": {
@@ -17,13 +17,14 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": "",
-    "install-windows-service": "winser -i",
-    "uninstall-windows-service": "winser -r"
+    "dev": "nodemon server.js"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/mergandevinsander/MagicPriceTracker.git"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
   },
   "author": "Mergandevinsander",
   "homepage": "https://vk.com/mergandevinsander",

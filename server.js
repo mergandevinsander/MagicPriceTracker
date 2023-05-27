@@ -30,7 +30,7 @@ app.get('/api/parseSale', (req, res) =>
     priceParser.parseSale(sets => cardService.addAndLogSets(sets, () => res.send({status: 'OK'}))))
 
 app.use((req, res, next) => {
-    log.alert(`Not found URL: ${req.url}`)
+    log.warn(`Not found URL: ${req.url}`)
     res.status(404).send({error: 'Not found'})
 })
 

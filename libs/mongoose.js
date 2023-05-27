@@ -1,14 +1,15 @@
 const mongoose = require('mongoose')
 const config = require('./config')
 const log = require('./log')
+const nconf = require("nconf")
 
-mongoose.connect(config.get("database:connectionString"), {useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect(config.get("database:connectionString") + '/' + nconf.get("database:dbName"), {useNewUrlParser: true, useUnifiedTopology: true})
 
 const db = mongoose.connection
 
 db.on('error', err => log.error('connection error:' + err.message))
 
-db.once('open', () => log.info("Connected to DB!"))
+db.once('open', () => log.info(`Connected to DB ${config.get("database:connectionString")}:${config.get("database:dbName")}`))
 
 const Schema = mongoose.Schema
 

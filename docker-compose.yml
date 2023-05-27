@@ -1,0 +1,30 @@
+﻿version: '3.9'
+
+services:
+  # MongoDB services
+  mongoDb:
+    container_name: dbContainer
+    image: mongo:latest
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - mongoDb:/data/db
+  
+  # Node Service
+  api:
+    build: .
+    ports:
+      - 3000:8031
+    volumes:
+      - .:/usr/src/app
+    environment:
+      PORT: 8031
+      MONGO_URL: mongodb://mongoDb:27017
+      DB_NAME: cardBase
+    depends_on:
+      - mongoDb
+
+volumes:
+  mongoDb: {}
+    

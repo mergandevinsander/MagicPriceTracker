@@ -1,9 +1,9 @@
 const nconf = require('nconf')
 
-nconf.file({file: './config.json'})
+nconf.argv().env().file({file: './config.json'})
 
 let mongoURL = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL
-
+let dbName
 if (!mongoURL && process.env.DATABASE_SERVICE_NAME) {
     const mongoServiceName = process.env.DATABASE_SERVICE_NAME.toUpperCase(),
         mongoHost = process.env[mongoServiceName + '_SERVICE_HOST'],
@@ -17,7 +17,8 @@ if (!mongoURL && process.env.DATABASE_SERVICE_NAME) {
         if (mongoUser && mongoPassword) {
             mongoURL += mongoUser + ':' + mongoPassword + '@'
         }
-        mongoURL += mongoHost + ':' + mongoPort + '/' + mongoDatabase
+        mongoURL += mongoHost + ':' + mongoPort
+        dbName = mongoDatabase
 
     }
 } else if (!mongoURL) {
@@ -27,7 +28,10 @@ if (!mongoURL && process.env.DATABASE_SERVICE_NAME) {
 const port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || nconf.get("server:port"),
     ip = process.env.IP || process.env.OPENSHIFT_NODEJS_IP || nconf.get("server:ip")
 
+dbName = dbName || process.env.DB_NAME || nconf.get("database:dbName")
+
 nconf.set('database:connectionString', mongoURL)
+nconf.set("database:dbName", dbName)
 nconf.set('server:port', port)
 nconf.set('server:ip', ip)
 

@@ -8,4 +8,5 @@ install mongo DB (6.0 version is accepted)
 
 ## command to run:
 
-node .\server.js
+docker compose build 
+docker compose run
