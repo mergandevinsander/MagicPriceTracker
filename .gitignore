@@ -1,2 +1,5 @@
 /node_modules/
 npm-debug.log
+/combined.log
+/error.log
+/.idea/.idea.magicPriceTracker.dir/.idea/

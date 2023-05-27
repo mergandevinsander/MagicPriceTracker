@@ -1,70 +1,62 @@
-var CardSetModel    = require('./mongoose').CardSetModel
-var CardSetList     = require('./mongoose').CardSetList
-var priceParser     = require('./priceParser')
-var log             = require('./log')
+const CardSetModel = require('./mongoose').CardSetModel
+const CardSetList = require('./mongoose').CardSetList
+const log = require('./log')
 
 function toDictionary(array, idColumn) {
-    var dict = {};
-    for (var i = array.length - 1; i >= 0; i--) {
-        dict[array[i][idColumn]] = array[i];
-    };
-    return dict;
-};
+    const dict = {}
+    for (let v of array)
+        dict[v][idColumn] = v
+    return dict
+}
+
+const logIfError = (err, callBack) => {
+    if (err) log.error(`Internal error: ${err.message}`)
+    if (callBack) callBack()
+}
 
 module.exports = {
-  getSets: (callBack) => {
-  return CardSetList.find().exec( (err, cardsets) => {
-      if (err) log.error('Internal error: %s', err.message)
-      callBack(cardsets)
-    })
-  },
+    getSets: callBack => CardSetList.find().exec((err, cardSets) => logIfError(err, () => callBack(cardSets))),
 
-  getSet: (setId, callBack) => {
-    return CardSetModel.findOne({ id: setId }).exec( (err, cardSet) => {
-      if (err) console.error('Internal error: %s', err.message)
-      callBack(cardSet)
-    })
-  },
+    getSet: (setId, callBack) => CardSetModel.findOne({id: setId}).exec((err, cardSet) => logIfError(err, () => callBack(cardSet))),
 
-  setInLib: (setId, cardId, inLib) => {
-  	CardSetModel.findOne({ id: setId }).exec( (err, set) => {
-      var card = set.cards.filter( (card) => { return card.id == cardId } ).pop()
-      if (card) card.inLib = inLib
-      set.save( (err) => { if (err) console.error('Internal error: %s',err.message) })
-    })
-  },
+    setInLib: (setId, cardId, inLib, callBack) =>
+        CardSetModel.findOne({id: setId}).exec((err, set) => {
+            const card = set.cards.filter(card => card.id === cardId).pop()
+            if (card) card.inLib = inLib
+            set.save(err => logIfError(err, () => callBack()))
+        }),
 
-  addAndLogSet: (diff) => {
-    var diff
-    CardSetList.findOne({ id: diff.id }, (err, set) => {
-      if(set) return 
-      set = new CardSetList({ id: diff.id, title: diff.title })
-      return set.save( (err) => {
-       if (err) console.error('Internal error: %s',err.message)
-      })
-    })
+    addAndLogSets: (diffs, callBack) => {
+        for (const diff of diffs) {
+            module.exports.addAndLogSet(diff)
+        }
+        callBack()
+    },
 
-    CardSetModel.findOne({ id: diff.id }, (err, set) => {
-      if(!set) {
-      	set = new CardSetModel(diff)
-      	return set.save( (err) => { if (err) console.error('Internal error: %s',err.message) })
-      } 
+    addAndLogSet: (diff) => {
+        CardSetList.findOne({id: diff.id}, (err, set) => {
+            if (set) return
+            set = new CardSetList({id: diff.id, title: diff.title})
+            return set.save(err => logIfError(err))
+        })
 
-      var dict = toDictionary(diff.cards, 'id')
-      for (var j = set.cards.length - 1; j >= 0; j--) {
-      	var card = set.cards[j]
-      	var newCard = dict[card.id]
-      	if (newCard.price != card.price) {
-      	  card.priceHistory = card.priceHistory.concat(newCard.priceHistory);
-      	  card.price = newCard.price
-      	}
-      }
+        CardSetModel.findOne({id: diff.id}, (err, set) => {
+            if (!set) {
+                set = new CardSetModel(diff)
+                return set.save(err => logIfError(err))
+            }
 
-      return set.save( (err) => {
-      	if (err) console.error('Internal error: %s',err.message)
-      })
-    })
-  }
+            const dict = toDictionary(diff.cards, 'id')
 
+            for (let card of set.cards) {
+                const newCard = dict[card.id]
+                if (newCard.price === card.price)
+                    continue
+                card.priceHistory = card.priceHistory.concat(newCard.priceHistory)
+                card.price = newCard.price
+            }
 
+            return set.save(err => logIfError(err))
+        })
+    },
 }

@@ -1,35 +1,39 @@
-.price {    
-  color: white;
-  font: bold 24px Helvetica, Sans-Serif; 
-  position: absolute;
-  right: 5px;
-  bottom: 33px;
-  background: rgba(0, 0, 0, 0.7);
-  opacity: 0.7;
-  padding: 10px;
+.price {
+    color: white;
+    font: bold 24px Helvetica, Sans-Serif;
+    position: absolute;
+    right: 5px;
+    bottom: 33px;
+    background: rgba(0, 0, 0, 0.7);
+    opacity: 0.7;
+    padding: 10px;
 }
-.card { 
-  float: left;
-  position: relative; 
-   /*height: 430px;*/
+
+.card {
+    float: left;
+    position: relative;
+    /*height: 430px;*/
 }
+
 .inLib {
-  position: absolute;
-  right: 5px;
-  bottom: 120px;
+    position: absolute;
+    right: 5px;
+    bottom: 120px;
 }
+
 .card .name {
-  left: 0px;
-  top: 0px;
-  z-index: 1000;
-  letter-spacing: 0px;
-  pointer-events: none;
-  color: transparent;
-  font-size: 13px;
-  position: absolute;
-  padding: 8.75% 0 0 8%;
-  width: 100%;
+    left: 0px;
+    top: 0px;
+    z-index: 1000;
+    letter-spacing: 0px;
+    pointer-events: none;
+    color: transparent;
+    font-size: 13px;
+    position: absolute;
+    padding: 8.75% 0 0 8%;
+    width: 100%;
 }
-body { 
-  padding-top: 40px; 
+
+body {
+    padding-top: 40px;
 }

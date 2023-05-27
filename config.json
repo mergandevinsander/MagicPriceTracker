@@ -1,7 +1,33 @@
 {
-    "server": {
-    	"port": 8031,
-    	"ip" : "192.168.1.32"
-    },
-    "database" :{ "connectionString" : "mongodb://localhost/test1" }
+  "server": {
+    "port": 8031,
+    "ip": "192.168.1.32"
+  },
+  "database": {
+    "connectionString": "mongodb://localhost/cardBase"
+  },
+  "priceSource": "https://mtgsale.ru/home/buylist",
+  "parserExceptions": {
+    "notExists": [
+      {
+        "set": "at",
+        "ids": [18, 80]
+      },
+      {
+        "set": "ddp",
+        "ids": [35, 36, 39, 40, 71, 72]
+      },
+      {
+        "set": "ust",
+        "ids": [3, 12, 41, 49, 54, 67, 82, 98, 103, 113, 145, 147, 165]
+      }
+    ],
+    "doubles": [
+      {
+        "set": "chk",
+        "ids": [160]
+      }
+    ],
+    "emptySet": ["etp", "4ea", "re", "scgp"]
+  }
 }
